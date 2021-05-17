@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="/scripts/home.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+    <span class="navbar-brand mb-0 h1">Wallet-tracking expenses</span>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto sidenav" id="navAccordion">
+            <li class="nav-item">
+                <input type="button" class="btn" style="background-color:transparent; color: grey" onclick="getHomePage()"  value="Dashboard">
+            </li>
+            <li class="nav-item">
+                <input type="button" class="btn" style="background-color:transparent; color: grey" onclick="getViewExpense()"  value="View Expense">
+            </li>
+        </ul>
+        <form class="form-inline ml-auto mt-2 mt-md-0">
+            <input class="btn my-2 my-sm-0" style="background-color:transparent; color: grey" type="button" onclick="logout()" value="Logout">
+        </form>
+    </div>
+</nav>
+<div id="content">
+
+</div>
+</body>
+<footer class="footer">
+    <div class="container">
+        <div class="text-center">
+            <span>Coded by JNevar, 2021</span>
+        </div>
+    </div>
+</footer>
+</html>

@@ -1,0 +1,100 @@
+<div class="container mt-5">
+    <div class="container" style="margin-top: 70px">
+        <input type="radio" onclick="drawChart('allTime')" name="time" id="choice1" checked>
+        <label for="choice1">For all time</label>
+        <input type="radio" onclick="drawChart('month')" name="time" id="choice2">
+        <label for="choice2">For month</label>
+    </div>
+    <div class="container row">
+        <div class="d-inline-block col-6" id="piechart" style="width: 800px; height: 500px;"></div>
+        <div class="d-inline-block col-6" id="piechart1" style="width: 800px; height: 500px;"></div>
+    </div>
+    <div class="container">
+        <div class="card col-8 mx-auto">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <button class="btn" style="background-color:transparent;" data-toggle="collapse"
+                            data-target="#collapseOne" aria-expanded="false"
+                            aria-controls="collapseOne">
+                        <h4>Add Expenses</h4>
+                    </button>
+                </h5>
+            </div>
+
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                    <div>
+                        <div class="form-group">
+                            <label for="InputAmount">Amount</label>
+                            <input type="number" step="0.01" class="form-control" id="InputAmount"
+                                   placeholder="Enter amount"
+                                   name="amount"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label for="InputDate">Date</label>
+                            <input class="form-control" type="date" id="InputDate" name="date" required>
+                            <small id="dateMessage"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="dvContainer">Category</label>
+                            <select class="form-control" id="dvContainer" name="category">
+                                <option value="" disabled selected>Select category</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="InputDescription">Description</label>
+                            <input type="text" class="form-control" id="InputDescription" placeholder="Description"
+                                   name="description">
+                        </div>
+                        <input type="button" onclick="addExpense()" value="Add expense">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-3"></div>
+
+
+        <div class="card col-8 mx-auto">
+            <div class="card-header" id="headingTwo">
+                <h5 class="mb-0">
+                    <button class="btn" style="background-color:transparent;" data-toggle="collapse"
+                            data-target="#collapseTwo" aria-expanded="false"
+                            aria-controls="collapseTwo">
+                        <h4>Add Incomes</h4>
+                    </button>
+                </h5>
+            </div>
+
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                <div class="card-body">
+                    <div>
+                        <div class="form-group">
+                            <label for="InputAmount1">Amount</label>
+                            <input type="number" step="0.01" class="form-control" id="InputAmount1"
+                                   placeholder="Enter amount"
+                                   name="amount1"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label for="InputDate1">Date</label>
+                            <input class="form-control" type="date" id="InputDate1" name="date1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dvContainer1">Category</label>
+                            <select class="form-control" id="dvContainer1" name="category1">
+                                <option value="" disabled selected>Select category</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="InputDescription1">Description</label>
+                            <input type="text" class="form-control" id="InputDescription1" placeholder="Description"
+                                   name="description1">
+                        </div>
+                        <input type="button" onclick="addIncome()" value="Add income">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
