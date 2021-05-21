@@ -4,7 +4,7 @@ const expenseRouter = express.Router();
 
 expenseRouter.post('/create' ,expenseController.addExpense);
 expenseRouter.post('/usersExpensesSum', expenseController.getUsersExpensesSum);
-expenseRouter.get('/ExpensesSum', expenseController.getExpensesSum);
+expenseRouter.post('/ExpensesSum', expenseController.getExpensesSum);
 expenseRouter.get('/getUsersExpenses', expenseController.getUsersExpenses);
 expenseRouter.delete('/deleteExpense', expenseController.deleteExpense);
 

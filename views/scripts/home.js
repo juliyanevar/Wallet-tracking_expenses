@@ -51,22 +51,22 @@ async function getCategoryIncomes() {
 
 async function addExpense() {
     //if (document.getElementsByName('date')[0].value <= new Date()) {
-        await fetch(base_api_path + 'expense/create',
-            {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(
-                    {
-                        amount: document.getElementsByName('amount')[0].value,
-                        date: document.getElementsByName('date')[0].value,
-                        category: document.getElementsByName('category')[0].value,
-                        description: document.getElementsByName('description')[0].value
-                    }
-                )
-            }).then(_ => {
-            drawChart();
-            cleanFields();
-        })
+    await fetch(base_api_path + 'expense/create',
+        {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(
+                {
+                    amount: document.getElementsByName('amount')[0].value,
+                    date: document.getElementsByName('date')[0].value,
+                    category: document.getElementsByName('category')[0].value,
+                    description: document.getElementsByName('description')[0].value
+                }
+            )
+        }).then(_ => {
+        drawChart();
+        cleanFields();
+    })
     // } else {
     //     document.getElementById('dateMessage')[0].value = 'Incorrect date!';
     // }
@@ -92,7 +92,7 @@ async function addIncome() {
 }
 
 
-async function drawChart(radioValue='allTime') {
+async function drawChart(radioValue = 'month') {
     var result = [];
     var resultSum = [];
     await fetch(base_api_path + 'expense/usersExpensesSum', {
@@ -100,7 +100,7 @@ async function drawChart(radioValue='allTime') {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(
             {
-                time:radioValue
+                time: radioValue
             }
         )
     })
@@ -111,14 +111,30 @@ async function drawChart(radioValue='allTime') {
             })
         });
 
-    await fetch(base_api_path + 'expense/ExpensesSum', {method: 'GET'})
+    await fetch(base_api_path + 'expense/ExpensesSum', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(
+            {
+                time: radioValue
+            }
+        )
+    })
         .then(res => res.json())
         .then(res => {
             res.forEach(exp => {
                 resultSum.push(['Expense', exp.amount]);
             })
         });
-    await fetch(base_api_path + 'income/IncomesSum', {method: 'GET'})
+    await fetch(base_api_path + 'income/IncomesSum', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(
+            {
+                time: radioValue
+            }
+        )
+    })
         .then(res => res.json())
         .then(res => {
             res.forEach(inc => {
@@ -137,11 +153,17 @@ async function drawChart(radioValue='allTime') {
     dataSum.addRows(resultSum);
 
     var options = {
-        title: 'My Expenses'
+        title: 'My Expenses',
+        //is3D: true,
+        pieHole: 0.3,
+        colors: ['#fcf170', '#fad836', '#f58553', '#f16043', '#c1559b', '#e57cb6', '#957fbb', '#4357a4', '#6ca3d8', '#57caf4', '#27ad7d', '#70c27e', '#e9eea5', '#c5d92f', '#d2d0cf']
     };
 
     var optionsSum = {
-        title: 'Balance'
+        title: 'Balance',
+        //is3D: true,
+        pieHole: 0.3,
+        colors: ['#4357a4', '#957fbb']
     }
 
     var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -174,6 +196,15 @@ async function getViewExpense() {
         });
 }
 
+async function getReport(){
+    await fetch(base_api_path + 'summaryReport', {method: 'GET'})
+        .then(response => response.text())
+        .then(view => {
+            document.getElementById('content').innerHTML = view;
+            report();
+            drawBarChart();
+        });
+}
 
 function logout() {
     fetch(base_api_path + 'logout', {method: 'GET'})
@@ -206,7 +237,7 @@ async function getExpensesIncomes(type) {
             let container = document.getElementById(tableId);
             container.innerHTML = '';
             container.innerHTML = '<tr>\n' +
-                '      <th scope="col">Amount</th>\n' +
+                '      <th scope="col">Amount, $</th>\n' +
                 '      <th scope="col">Date</th>\n' +
                 '      <th scope="col">Category</th>\n' +
                 '      <th scope="col">Description</th>\n' +
@@ -255,4 +286,202 @@ function deleteIncome(event) {
         });
         getExpensesIncomes('income');
     }
+}
+
+async function report(){
+    let balance=0;
+    let totalExpense=0;
+    let totalIncome=0;
+    let monthExpense=0;
+    let monthIncome=0;
+    await fetch(base_api_path + 'expense/ExpensesSum', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(
+            {
+                time: 'allTime'
+            }
+        )
+    })
+        .then(res => res.json())
+        .then(res => {
+            res.forEach(exp => {
+                balance-=exp.amount;
+                totalExpense+=exp.amount;
+            })
+        });
+    await fetch(base_api_path + 'income/IncomesSum', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(
+            {
+                time: 'allTime'
+            }
+        )
+    })
+        .then(res => res.json())
+        .then(res => {
+            res.forEach(inc => {
+                balance+=inc.amount;
+                totalIncome+=inc.amount;
+            })
+        });
+
+    await fetch(base_api_path + 'expense/ExpensesSum', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(
+            {
+                time: 'month'
+            }
+        )
+    })
+        .then(res => res.json())
+        .then(res => {
+            res.forEach(exp => {
+                monthExpense+=exp.amount;
+            })
+        });
+    await fetch(base_api_path + 'income/IncomesSum', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(
+            {
+                time: 'month'
+            }
+        )
+    })
+        .then(res => res.json())
+        .then(res => {
+            res.forEach(inc => {
+                monthIncome+=inc.amount;
+            })
+        });
+
+    document.getElementById('currentBalance').innerText=balance.toFixed(2)+'$';
+    document.getElementById('totalExpense').innerText=totalExpense.toFixed(2)+'$';
+    document.getElementById('totalIncome').innerText=totalIncome.toFixed(2)+'$';
+    document.getElementById('monthlyExpense').innerText=monthExpense.toFixed(2)+'$';
+    document.getElementById('monthlyIncome').innerText=monthIncome.toFixed(2)+'$';
+}
+
+
+async function drawBarChart() {
+    let result = [];
+    let resultIncomes=[];
+    let monthExpense =[];
+    let monthIncome =[];
+    await fetch(base_api_path + 'expense/usersExpensesSum', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(
+            {
+                time: 'allTime'
+            }
+        )
+    })
+        .then(res => res.json())
+        .then(res => {
+            res.forEach(exp => {
+                result.push([exp.category, exp.amount]);
+            })
+        });
+
+    await fetch(base_api_path + 'income/usersIncomesSum', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(
+            {
+                time: 'allTime'
+            }
+        )
+    })
+        .then(res => res.json())
+        .then(res => {
+            res.forEach(exp => {
+                resultIncomes.push([exp.category, exp.amount]);
+            })
+        });
+
+    await fetch(base_api_path + 'expense/usersExpensesSum', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(
+            {
+                time: 'month'
+            }
+        )
+    })
+        .then(res => res.json())
+        .then(res => {
+            res.forEach(exp => {
+                monthExpense.push([exp.category, exp.amount]);
+            })
+        });
+
+    await fetch(base_api_path + 'income/usersIncomesSum', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(
+            {
+                time: 'month'
+            }
+        )
+    })
+        .then(res => res.json())
+        .then(res => {
+            res.forEach(exp => {
+                monthIncome.push([exp.category, exp.amount]);
+            })
+        });
+
+    let data = new google.visualization.DataTable();
+    data.addColumn('string', 'Category');
+    data.addColumn('number', 'Amount');
+    data.addRows(result);
+
+    let dataIncomes = new google.visualization.DataTable();
+    dataIncomes.addColumn('string', 'Category');
+    dataIncomes.addColumn('number', 'Amount');
+    dataIncomes.addRows(resultIncomes);
+
+    let dataMonthExp = new google.visualization.DataTable();
+    dataMonthExp.addColumn('string', 'Category');
+    dataMonthExp.addColumn('number', 'Amount');
+    dataMonthExp.addRows(monthExpense);
+
+    let dataMonthInc = new google.visualization.DataTable();
+    dataMonthInc.addColumn('string', 'Category');
+    dataMonthInc.addColumn('number', 'Amount');
+    dataMonthInc.addRows(monthIncome);
+
+    let options = {
+        title: 'Total Expense',
+        colors: ['#f16043']
+    };
+
+    let optionsIncomes = {
+        title: 'Total Income',
+        colors: ['#27ad7d']
+    };
+
+    let optionsMonthExp = {
+        title: 'Monthly Expense',
+        colors: ['#f16043']
+    };
+
+    let optionsMonthInc = {
+        title: 'Monthly Income',
+        colors: ['#27ad7d']
+    };
+
+    let chart = new google.visualization.ColumnChart(document.getElementById('divTotalExpense'));
+    let chartIncomes = new google.visualization.BarChart(document.getElementById('divTotalIncome'));
+    let chartMonthExp = new google.visualization.ColumnChart(document.getElementById('divMonthlyExpense'));
+    let chartMonthInc = new google.visualization.BarChart(document.getElementById('divMonthlyIncome'));
+
+    chart.draw(data, options);
+    chartIncomes.draw(dataIncomes, optionsIncomes);
+    chartMonthExp.draw(dataMonthExp, optionsMonthExp);
+    chartMonthInc.draw(dataMonthInc, optionsMonthInc);
 }

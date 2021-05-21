@@ -20,10 +20,15 @@ exports.viewExpense = async function(req,res){
     res.send(view);
 };
 
+exports.summaryReport = async function(req, res){
+    let view = fs.readFileSync('./views/report.html',"utf8");
+    res.send(view);
+}
+
 exports.logout = function(req,res){
     req.session.logout = true;
-    req.session.destroy(e => {
+     req.session.destroy(e => {
         req.logout();
-        res.redirect("/");
-    });
+         res.redirect("/");
+     });
 }

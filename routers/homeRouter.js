@@ -6,6 +6,7 @@ homeRouter.get("/", homeController.index);
 homeRouter.get("/login", homeController.login);
 homeRouter.get("/home", homeController.home);
 homeRouter.get('/viewExpense', homeController.viewExpense);
+homeRouter.get('/summaryReport', homeController.summaryReport);
 homeRouter.get('/logout', homeController.logout);
 
 

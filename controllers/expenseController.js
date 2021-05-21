@@ -10,16 +10,27 @@ exports.getExpenses = function (req, res) {
 
 exports.addExpense = function (req, res) {
 
-    Expense.findAll({
-        attributes: [Sequelize.fn('max', Sequelize.col('id'))],
-        raw: true,
-    })
-        .then(maxId => {
-            JSON.parse(JSON.stringify(maxId), (key, value) => {
-                if (key === '') {
-                    if (value == null) {
+    // Expense.findAll({
+    //     attributes: [Sequelize.fn('max', Sequelize.col('id'))],
+    //     raw: true,
+    // })
+    //     .then(maxId => {
+    //         JSON.parse(JSON.stringify(maxId), (key, value) => {
+    //             if (key === '') {
+    //                 if (value == null) {
+    //                     Expense.create({
+    //                         id: 1,
+    //                         user: req.user.username,
+    //                         amount: req.body.amount,
+    //                         date: req.body.date,
+    //                         category: req.body.category,
+    //                         description: req.body.description
+    //                     })
+    //                         .catch((err) => console.log('Error: ' + err.message));
+    //                     res.send();
+    //                 } else if (!Array.isArray(value)) {
+    //                     let Id = value + 1;
                         Expense.create({
-                            id: 1,
                             user: req.user.username,
                             amount: req.body.amount,
                             date: req.body.date,
@@ -28,22 +39,10 @@ exports.addExpense = function (req, res) {
                         })
                             .catch((err) => console.log('Error: ' + err.message));
                         res.send();
-                    } else if (!Array.isArray(value)) {
-                        let Id = value + 1;
-                        Expense.create({
-                            id: Id,
-                            user: req.user.username,
-                            amount: req.body.amount,
-                            date: req.body.date,
-                            category: req.body.category,
-                            description: req.body.description
-                        })
-                            .catch((err) => console.log('Error: ' + err.message));
-                        res.send();
-                    }
-                }
-            })
-        });
+        //             }
+        //         }
+        //     })
+        // });
 };
 
 exports.updateExpense = function (req, res) {
@@ -66,7 +65,8 @@ exports.deleteExpense = function (req, res) {
 
 exports.getUsersExpenses = function (req, res) {
         Expense.findAll({
-            where: {user: req.user.username}
+            where: {user: req.user.username},
+            order:[['date','DESC']]
         })
             .then(expense => res.send(JSON.stringify(expense)))
             .catch((err) => console.log('Error: ' + err.message));
@@ -120,12 +120,44 @@ exports.getUsersExpensesSum = function (req, res) {
 }
 
 exports.getExpensesSum = function (req, res) {
-    Expense.findAll({
-        where: {user: req.user.username},
-        attributes: [[Sequelize.fn('sum', Sequelize.col('amount')), 'amount']]
-    })
-        .then(expense => {
-            res.send(JSON.stringify(expense))
+    if (req.body.time == 'month') {
+        let date = new Date();
+        let month = date.getMonth();
+        let year = date.getFullYear();
+        let endDay;
+        switch (month) {
+            case '0':
+            case '2':
+            case '4':
+            case '6':
+            case '7':
+            case '9':
+            case '11':
+                endDay = 31;
+                break;
+            case '1':
+                endDay = 28;
+            default:
+                endDay = 30;
+        }
+        let startDate = new Date(year, month, 1);
+        let endDate = new Date(year, month, endDay);
+        Expense.findAll({
+            where: {user: req.user.username, date: {[Op.between]: [startDate, endDate]}},
+            attributes: [[Sequelize.fn('sum', Sequelize.col('amount')), 'amount']]
         })
-        .catch((err) => console.log('Error: ' + err.message));
+            .then(expense => {
+                res.send(JSON.stringify(expense))
+            })
+            .catch((err) => console.log('Error: ' + err.message));
+    }else{
+        Expense.findAll({
+            where: {user: req.user.username},
+            attributes: [[Sequelize.fn('sum', Sequelize.col('amount')), 'amount']]
+        })
+            .then(expense => {
+                res.send(JSON.stringify(expense))
+            })
+            .catch((err) => console.log('Error: ' + err.message));
+    }
 }

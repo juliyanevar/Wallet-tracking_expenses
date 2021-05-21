@@ -1,5 +1,6 @@
 create database TrackingExpenses;
-
+drop database TrackingExpenses;
+use master;
 use TrackingExpenses;
 
 create table [User]
