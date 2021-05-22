@@ -9,8 +9,6 @@ module.exports.send = function (message, receiver) {
     let transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
-        //service: 'gmail',
-        //ignoreTLS: false,
         secure: true,
         auth: {
             user: sender,
