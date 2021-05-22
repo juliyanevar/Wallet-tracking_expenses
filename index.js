@@ -8,6 +8,7 @@ const Sequelize = require('sequelize');
 const sequelize = require("./connection/db_connection.js");
 const {User, Expense, Income, ExpenseCategory, IncomeCategory}=require('./models/db_schema.js').ORM(sequelize);
 const Op = Sequelize.Op;
+const PORT = process.env.PORT || 3000;
 
 const registrationRouter = require("./routers/registrationRouter.js");
 const expenseCategoryRouter = require('./routers/expenseCategoryRouter');
@@ -76,4 +77,4 @@ app.use(function (req, res, next) {
     res.status(404).send("Not Found")
 });
 
-app.listen(3000,()=>{console.log('Listening on http://localhost:3000/');});
+app.listen(PORT,()=>{console.log('Listening on http://localhost:3000/');});
