@@ -214,6 +214,16 @@ function logout() {
     // .then(view => {
     //     document.getElementById('content').innerHTML = view;
     // });
+    // fetch(base_api_path, {method: 'GET'})
+    //     .then(response => response.text())
+    //     .then(view => document.body.innerHTML = view)
+    //     .then(
+    //         fetch(base_api_path + 'login', {method: 'GET'})
+    //             .then(response => response.text())
+    //             .then(view => {
+    //                 document.getElementById('content').innerHTML = view;
+    //             })
+    //     );
 }
 
 
