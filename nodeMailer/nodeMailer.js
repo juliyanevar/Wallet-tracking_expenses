@@ -6,16 +6,17 @@ const fs = require('fs');
 
 module.exports.send = function (message, receiver) {
     let password = fs.readFileSync(__dirname+'/mailpassword.txt', 'utf8');
-    let transporter = nodemailer.createTransport(smtpTransport({
+    let transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
-        service: 'gmail',
+        //service: 'gmail',
+        ignoreTLS: false,
         secure: false,
         auth: {
             user: sender,
             pass: password
         }
-    }));
+    });
 
     let mailOptions = {
         from: sender,
