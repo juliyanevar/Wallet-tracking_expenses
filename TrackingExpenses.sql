@@ -43,7 +43,7 @@ create table IncomeCategory
 
 
 
-insert into ExpenseCategory([name]) values('Bills'), ('Car'),
+insert into ExpenseCategory(name) values('Bills'), ('Car'),
 										  ('Clothes'), ('Communications'),
 										  ('Eating out'), ('Entertainment'),
 										  ('Food'), ('Gifts'),
@@ -54,12 +54,11 @@ insert into ExpenseCategory([name]) values('Bills'), ('Car'),
 
 
 
-insert into IncomeCategory([name]) values('Deposits'), ('Salary'),
+insert into IncomeCategory(name) values('Deposits'), ('Salary'),
 										 ('Savings');
 
-insert into [user] values('juli', 'juliyanevar@gmail.com');
+select * from Income;
 
-select * from [income];
 
  SELECT [category], sum([amount]) FROM [Expense] AS [Expense] WHERE [Expense].[user] = N'juli' GROUP BY [category];
 

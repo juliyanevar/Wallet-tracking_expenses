@@ -107,7 +107,7 @@ async function drawChart(radioValue = 'month') {
         .then(res => res.json())
         .then(res => {
             res.forEach(exp => {
-                result.push([exp.category, exp.amount]);
+                result.push([exp.category, +exp.amount]);
             })
         });
 
@@ -123,7 +123,7 @@ async function drawChart(radioValue = 'month') {
         .then(res => res.json())
         .then(res => {
             res.forEach(exp => {
-                resultSum.push(['Expense', exp.amount]);
+                resultSum.push(['Expense', +exp.amount]);
             })
         });
     await fetch(base_api_path + 'income/IncomesSum', {
@@ -138,7 +138,7 @@ async function drawChart(radioValue = 'month') {
         .then(res => res.json())
         .then(res => {
             res.forEach(inc => {
-                resultSum.push(['Income', inc.amount]);
+                resultSum.push(['Income', +inc.amount]);
             })
         });
 
@@ -154,6 +154,7 @@ async function drawChart(radioValue = 'month') {
 
     var options = {
         title: 'My Expenses',
+        titleTextStyle:{fontSize: 20},
         //is3D: true,
         pieHole: 0.3,
         colors: ['#fcf170', '#fad836', '#f58553', '#f16043', '#c1559b', '#e57cb6', '#957fbb', '#4357a4', '#6ca3d8', '#57caf4', '#27ad7d', '#70c27e', '#e9eea5', '#c5d92f', '#d2d0cf']
@@ -161,6 +162,7 @@ async function drawChart(radioValue = 'month') {
 
     var optionsSum = {
         title: 'Balance',
+        titleTextStyle:{fontSize: 20},
         //is3D: true,
         pieHole: 0.3,
         colors: ['#4357a4', '#957fbb']
@@ -289,7 +291,7 @@ function deleteIncome(event) {
 }
 
 async function report(){
-    let balance=0;
+    let balance = 0;
     let totalExpense=0;
     let totalIncome=0;
     let monthExpense=0;
@@ -307,9 +309,10 @@ async function report(){
         .then(res => {
             res.forEach(exp => {
                 balance-=exp.amount;
-                totalExpense+=exp.amount;
+                totalExpense+=parseFloat(exp.amount);
             })
         });
+    console.log(balance);
     await fetch(base_api_path + 'income/IncomesSum', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -322,11 +325,11 @@ async function report(){
         .then(res => res.json())
         .then(res => {
             res.forEach(inc => {
-                balance+=inc.amount;
-                totalIncome+=inc.amount;
+                balance+=parseFloat(inc.amount);
+                totalIncome+=parseFloat(inc.amount);
             })
         });
-
+    console.log(balance);
     await fetch(base_api_path + 'expense/ExpensesSum', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -339,7 +342,7 @@ async function report(){
         .then(res => res.json())
         .then(res => {
             res.forEach(exp => {
-                monthExpense+=exp.amount;
+                monthExpense+=parseFloat(exp.amount);
             })
         });
     await fetch(base_api_path + 'income/IncomesSum', {
@@ -354,15 +357,15 @@ async function report(){
         .then(res => res.json())
         .then(res => {
             res.forEach(inc => {
-                monthIncome+=inc.amount;
+                monthIncome+=parseFloat(inc.amount);
             })
         });
 
-    document.getElementById('currentBalance').innerText=balance.toFixed(2)+'$';
-    document.getElementById('totalExpense').innerText=totalExpense.toFixed(2)+'$';
-    document.getElementById('totalIncome').innerText=totalIncome.toFixed(2)+'$';
-    document.getElementById('monthlyExpense').innerText=monthExpense.toFixed(2)+'$';
-    document.getElementById('monthlyIncome').innerText=monthIncome.toFixed(2)+'$';
+    document.getElementById('currentBalance').innerText=balance+'$';
+    document.getElementById('totalExpense').innerText=totalExpense+'$';
+    document.getElementById('totalIncome').innerText=totalIncome+'$';
+    document.getElementById('monthlyExpense').innerText=monthExpense+'$';
+    document.getElementById('monthlyIncome').innerText=monthIncome+'$';
 }
 
 
@@ -383,7 +386,7 @@ async function drawBarChart() {
         .then(res => res.json())
         .then(res => {
             res.forEach(exp => {
-                result.push([exp.category, exp.amount]);
+                result.push([exp.category, +exp.amount]);
             })
         });
 
@@ -399,7 +402,7 @@ async function drawBarChart() {
         .then(res => res.json())
         .then(res => {
             res.forEach(exp => {
-                resultIncomes.push([exp.category, exp.amount]);
+                resultIncomes.push([exp.category, +exp.amount]);
             })
         });
 
@@ -415,7 +418,7 @@ async function drawBarChart() {
         .then(res => res.json())
         .then(res => {
             res.forEach(exp => {
-                monthExpense.push([exp.category, exp.amount]);
+                monthExpense.push([exp.category, +exp.amount]);
             })
         });
 
@@ -431,7 +434,7 @@ async function drawBarChart() {
         .then(res => res.json())
         .then(res => {
             res.forEach(exp => {
-                monthIncome.push([exp.category, exp.amount]);
+                monthIncome.push([exp.category, +exp.amount]);
             })
         });
 

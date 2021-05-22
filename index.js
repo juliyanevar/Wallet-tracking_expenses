@@ -31,6 +31,7 @@ app.use(express.static(__dirname + '/views'));
 sequelize.authenticate()
     .then(() => {
         console.log('Соединение с базой данных установлено');
+
     })
     .catch(err => {
         console.log('Ошибка при соединении с базой данных', err.message);
