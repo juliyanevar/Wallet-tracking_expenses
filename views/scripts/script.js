@@ -1,7 +1,7 @@
 const base_api_path = `${window.location.origin}/`;
 
 function getCode() {
-    fetch('http://localhost:3000/registration',
+    fetch(base_api_path+'registration',
         {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -20,7 +20,7 @@ function getCode() {
 }
 
 function register() {
-    fetch('http://localhost:3000/registration/addUser',
+    fetch(base_api_path+'registration/addUser',
         {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
