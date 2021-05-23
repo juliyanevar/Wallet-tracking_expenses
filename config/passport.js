@@ -14,8 +14,8 @@ passport.use(
         {
             clientID: '657430627711-2jecito4q3fnm7po6cuajcl55kgcro3n.apps.googleusercontent.com',
             clientSecret: 'DLe3zdWDskC1xGJFfye2XHaG',
-            //callbackURL: "https://rocky-castle-38495.herokuapp.com/auth/google/callback",
-            callbackURL: "http://localhost:3000/auth/google/callback",
+            callbackURL: "https://rocky-castle-38495.herokuapp.com/auth/google/callback",
+            //callbackURL: "http://localhost:3000/auth/google/callback",
         },
         function (accessToken, refreshToken, profile, cb) {
             return cb(null, profile);
