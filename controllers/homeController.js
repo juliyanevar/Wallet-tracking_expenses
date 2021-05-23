@@ -6,29 +6,34 @@ exports.index = function (req, res) {
 };
 
 exports.login = async function (req, res) {
-    let view = fs.readFileSync('./views/start.html',"utf8");
+    let view = fs.readFileSync('./views/start.html', "utf8");
     res.send(view);
 };
 
 exports.home = async function (req, res) {
-    let view = fs.readFileSync('./views/home.html',"utf8");
-    res.send(view);
+    if (req.user) {
+        let view = fs.readFileSync('./views/home.html', "utf8");
+        res.send(view);
+    } else res.redirect('/');
 };
 
-exports.viewExpense = async function(req,res){
-    let view = fs.readFileSync('./views/viewExpense.html',"utf8");
-    res.send(view);
+exports.viewExpense = async function (req, res) {
+    if (req.user) {
+        let view = fs.readFileSync('./views/viewExpense.html', "utf8");
+        res.send(view);
+    } else res.redirect('/');
 };
 
-exports.summaryReport = async function(req, res){
-    let view = fs.readFileSync('./views/report.html',"utf8");
-    res.send(view);
+exports.summaryReport = async function (req, res) {
+    if (req.user) {
+        let view = fs.readFileSync('./views/report.html', "utf8");
+        res.send(view);
+    } else res.redirect('/');
 }
 
-exports.logout = function(req,res){
+exports.logout = function (req, res) {
     req.session.logout = true;
-     req.session.destroy(e => {
+    req.session.destroy(e => {
         req.logout();
-         res.redirect("/");
-     });
+    });
 }

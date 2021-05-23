@@ -64,7 +64,7 @@ app.get('/resource', (req, res, next)=>{
                             req.user.username=user.username;
                             res.sendFile(__dirname+'/indexHome.html');
                         }
-                        else res.send('To log in, register!')})
+                        else res.redirect('/')})
                     .catch(err=>{console.log(err.message)});
             }
         });
