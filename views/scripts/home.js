@@ -50,7 +50,7 @@ async function getCategoryIncomes() {
 }
 
 async function addExpense() {
-    //if (document.getElementsByName('date')[0].value <= new Date()) {
+    let balance= 0;
     await fetch(base_api_path + 'expense/create',
         {
             method: 'POST',
@@ -67,9 +67,41 @@ async function addExpense() {
         drawChart();
         cleanFields();
     })
-    // } else {
-    //     document.getElementById('dateMessage')[0].value = 'Incorrect date!';
-    // }
+    await fetch(base_api_path + 'expense/ExpensesSum', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(
+            {
+                time: 'allTime'
+            }
+        )
+    })
+        .then(res => res.json())
+        .then(res => {
+            res.forEach(exp => {
+                balance-=parseFloat(exp.amount);
+            })
+        });
+    await fetch(base_api_path + 'income/IncomesSum', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(
+            {
+                time: 'allTime'
+            }
+        )
+    })
+        .then(res => res.json())
+        .then(res => {
+            res.forEach(inc => {
+                balance+=parseFloat(inc.amount);
+            })
+        });
+    if(balance<0){
+        let myModal = new bootstrap.Modal(document.getElementById('modal'));
+
+        myModal.show();
+    }
 }
 
 async function addIncome() {
@@ -154,7 +186,7 @@ async function drawChart(radioValue = 'month') {
 
     var options = {
         title: 'My Expenses',
-        titleTextStyle:{fontSize: 20},
+        titleTextStyle: {fontSize: 20},
         //is3D: true,
         pieHole: 0.3,
         colors: ['#fcf170', '#fad836', '#f58553', '#f16043', '#c1559b', '#e57cb6', '#957fbb', '#4357a4', '#6ca3d8', '#57caf4', '#27ad7d', '#70c27e', '#e9eea5', '#c5d92f', '#d2d0cf']
@@ -162,7 +194,7 @@ async function drawChart(radioValue = 'month') {
 
     var optionsSum = {
         title: 'Balance',
-        titleTextStyle:{fontSize: 20},
+        titleTextStyle: {fontSize: 20},
         //is3D: true,
         pieHole: 0.3,
         colors: ['#4357a4', '#957fbb']
@@ -198,7 +230,7 @@ async function getViewExpense() {
         });
 }
 
-async function getReport(){
+async function getReport() {
     await fetch(base_api_path + 'summaryReport', {method: 'GET'})
         .then(response => response.text())
         .then(view => {
@@ -296,12 +328,12 @@ function deleteIncome(event) {
     }
 }
 
-async function report(){
+async function report() {
     let balance = 0;
-    let totalExpense=0;
-    let totalIncome=0;
-    let monthExpense=0;
-    let monthIncome=0;
+    let totalExpense = 0;
+    let totalIncome = 0;
+    let monthExpense = 0;
+    let monthIncome = 0;
     await fetch(base_api_path + 'expense/ExpensesSum', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -314,8 +346,8 @@ async function report(){
         .then(res => res.json())
         .then(res => {
             res.forEach(exp => {
-                balance-=exp.amount;
-                totalExpense+=parseFloat(exp.amount);
+                balance -= exp.amount;
+                totalExpense += parseFloat(exp.amount);
             })
         });
     console.log(balance);
@@ -331,8 +363,8 @@ async function report(){
         .then(res => res.json())
         .then(res => {
             res.forEach(inc => {
-                balance+=parseFloat(inc.amount);
-                totalIncome+=parseFloat(inc.amount);
+                balance += parseFloat(inc.amount);
+                totalIncome += parseFloat(inc.amount);
             })
         });
     console.log(balance);
@@ -348,7 +380,7 @@ async function report(){
         .then(res => res.json())
         .then(res => {
             res.forEach(exp => {
-                monthExpense+=parseFloat(exp.amount);
+                monthExpense += parseFloat(exp.amount);
             })
         });
     await fetch(base_api_path + 'income/IncomesSum', {
@@ -363,23 +395,23 @@ async function report(){
         .then(res => res.json())
         .then(res => {
             res.forEach(inc => {
-                monthIncome+=parseFloat(inc.amount);
+                monthIncome += parseFloat(inc.amount);
             })
         });
 
-    document.getElementById('currentBalance').innerText=balance+'$';
-    document.getElementById('totalExpense').innerText=totalExpense+'$';
-    document.getElementById('totalIncome').innerText=totalIncome+'$';
-    document.getElementById('monthlyExpense').innerText=monthExpense+'$';
-    document.getElementById('monthlyIncome').innerText=monthIncome+'$';
+    document.getElementById('currentBalance').innerText = balance + '$';
+    document.getElementById('totalExpense').innerText = totalExpense + '$';
+    document.getElementById('totalIncome').innerText = totalIncome + '$';
+    document.getElementById('monthlyExpense').innerText = monthExpense + '$';
+    document.getElementById('monthlyIncome').innerText = monthIncome + '$';
 }
 
 
 async function drawBarChart() {
     let result = [];
-    let resultIncomes=[];
-    let monthExpense =[];
-    let monthIncome =[];
+    let resultIncomes = [];
+    let monthExpense = [];
+    let monthIncome = [];
     await fetch(base_api_path + 'expense/usersExpensesSum', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
