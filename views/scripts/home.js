@@ -149,7 +149,7 @@ async function addIncome() {
                 }
             )
         }).then(_ => {
-        drawChart();
+        setTimeout(_=>drawChart(),500);
         socketIo.emit('update', 'getAll');
         cleanFields();
     })
