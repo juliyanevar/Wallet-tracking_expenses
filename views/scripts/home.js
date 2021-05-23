@@ -5,23 +5,30 @@ window.onload = () => {
 }
 const socketIo = io();
 
-socketIo.on('getChart', _ => {
-    setTimeout(_ => drawChart(), 500);
+// socketIo.on('getChart', _ => {
+//     setTimeout(_ => drawChart(), 500);
+// })
+//
+// socketIo.on('getExp', _ => {
+//     setTimeout(_ => getExpensesIncomes('expense'), 500);
+// })
+//
+// socketIo.on('getInc', _ => {
+//     setTimeout(_ => getExpensesIncomes('income'), 500);
+// })
+//
+// socketIo.on('getReport', _ => {
+//     setTimeout(_ => updateReport(), 500);
+// })
+
+socketIo.on('getAll', _ => {
+    setTimeout(_ => getAll(), 500);
 })
 
-socketIo.on('getExp', _ => {
-    setTimeout(_ => getExpensesIncomes('expense'), 500);
-})
-
-socketIo.on('getInc', _ => {
-    setTimeout(_ => getExpensesIncomes('income'), 500);
-})
-
-socketIo.on('getReport', _ => {
-    setTimeout(_ => updateReport(), 500);
-})
-
-function updateReport() {
+function getAll() {
+    drawChart()
+    getExpensesIncomes('expense')
+    getExpensesIncomes('income')
     report();
     drawBarChart();
 }
@@ -87,8 +94,9 @@ async function addExpense() {
                 }
             )
         }).then(_ => {
-        socketIo.emit('update', 'getChart');
+            setTimeout(_=>drawChart(),500);
         cleanFields();
+        socketIo.emit('update', 'getAll');
     })
     await fetch(base_api_path + 'expense/ExpensesSum', {
         method: 'POST',
@@ -141,7 +149,8 @@ async function addIncome() {
                 }
             )
         }).then(_ => {
-        socketIo.emit('update', 'getChart');
+        drawChart();
+        socketIo.emit('update', 'getAll');
         cleanFields();
     })
 }
@@ -333,7 +342,8 @@ function deleteExpense(event) {
                     id: event.target.getAttribute('id')
                 })
         }).then(_ => {
-            socketIo.emit('update', 'getExp');
+            socketIo.emit('update', 'getAll');
+            getExpensesIncomes('expense');
         });
     }
 }
@@ -348,7 +358,8 @@ function deleteIncome(event) {
                     id: event.target.getAttribute('id')
                 })
         }).then(_ => {
-            socketIo.emit('update', 'getInc');
+            socketIo.emit('update', 'getAll');
+            getExpensesIncomes('income');
         });
     }
 }

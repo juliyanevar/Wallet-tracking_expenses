@@ -86,7 +86,7 @@ io.on('connection', (socket) => {
     });
     socket.on('update', (msg) => {
         console.log('socket '+msg);
-        socket.emit(msg);
+        socket.broadcast.emit(msg);
     });
 });
 
