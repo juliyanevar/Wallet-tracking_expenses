@@ -3,6 +3,29 @@ const base_api_path = `${window.location.origin}/`;
 window.onload = () => {
     getHomePage();
 }
+const socketIo = io();
+
+socketIo.on('getChart', _ => {
+    setTimeout(_ => drawChart(), 500);
+})
+
+socketIo.on('getExp', _ => {
+    setTimeout(_ => getExpensesIncomes('expense'), 500);
+})
+
+socketIo.on('getInc', _ => {
+    setTimeout(_ => getExpensesIncomes('income'), 500);
+})
+
+socketIo.on('getReport', _ => {
+    setTimeout(_ => updateReport(), 500);
+})
+
+function updateReport() {
+    report();
+    drawBarChart();
+}
+
 
 async function getHomePage() {
     fetch(base_api_path + 'home', {method: 'GET'})
@@ -50,7 +73,7 @@ async function getCategoryIncomes() {
 }
 
 async function addExpense() {
-    let balance= 0;
+    let balance = 0;
     await fetch(base_api_path + 'expense/create',
         {
             method: 'POST',
@@ -64,7 +87,7 @@ async function addExpense() {
                 }
             )
         }).then(_ => {
-        drawChart();
+        socketIo.emit('update', 'getChart');
         cleanFields();
     })
     await fetch(base_api_path + 'expense/ExpensesSum', {
@@ -79,7 +102,7 @@ async function addExpense() {
         .then(res => res.json())
         .then(res => {
             res.forEach(exp => {
-                balance-=parseFloat(exp.amount);
+                balance -= parseFloat(exp.amount);
             })
         });
     await fetch(base_api_path + 'income/IncomesSum', {
@@ -94,10 +117,10 @@ async function addExpense() {
         .then(res => res.json())
         .then(res => {
             res.forEach(inc => {
-                balance+=parseFloat(inc.amount);
+                balance += parseFloat(inc.amount);
             })
         });
-    if(balance<0){
+    if (balance < 0) {
         let myModal = new bootstrap.Modal(document.getElementById('modal'));
 
         myModal.show();
@@ -118,7 +141,7 @@ async function addIncome() {
                 }
             )
         }).then(_ => {
-        drawChart();
+        socketIo.emit('update', 'getChart');
         cleanFields();
     })
 }
@@ -309,8 +332,9 @@ function deleteExpense(event) {
                 {
                     id: event.target.getAttribute('id')
                 })
+        }).then(_ => {
+            socketIo.emit('update', 'getExp');
         });
-        getExpensesIncomes('expense');
     }
 }
 
@@ -323,8 +347,9 @@ function deleteIncome(event) {
                 {
                     id: event.target.getAttribute('id')
                 })
+        }).then(_ => {
+            socketIo.emit('update', 'getInc');
         });
-        getExpensesIncomes('income');
     }
 }
 
@@ -350,7 +375,6 @@ async function report() {
                 totalExpense += parseFloat(exp.amount);
             })
         });
-    console.log(balance);
     await fetch(base_api_path + 'income/IncomesSum', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -367,7 +391,6 @@ async function report() {
                 totalIncome += parseFloat(inc.amount);
             })
         });
-    console.log(balance);
     await fetch(base_api_path + 'expense/ExpensesSum', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},

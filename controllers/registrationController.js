@@ -9,7 +9,7 @@ let codes = [];
 exports.getPage = function (req, res) {
     let view = fs.readFileSync('./views/getCode.html', "utf8");
     res.send(view);
-} //TODO: проверять дату, уведомление о перерасходе(расходы превышают доходы)
+}
 
 exports.sendCode = async function (req, res) {
     const user = await User.findOne({where: {googleId: req.body.googleId}});

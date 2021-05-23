@@ -1,13 +1,15 @@
 const express = require("express");
 const app = express();
-const fs = require('fs');
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const session = require('express-session')({resave: false, saveUninitialized: false, secret: '321',});
 const Sequelize = require('sequelize');
 const sequelize = require("./connection/db_connection.js");
 const {User, Expense, Income, ExpenseCategory, IncomeCategory}=require('./models/db_schema.js').ORM(sequelize);
-const Op = Sequelize.Op;
 const PORT = process.env.PORT || 3000;
 
 const registrationRouter = require("./routers/registrationRouter.js");
@@ -77,4 +79,15 @@ app.use(function (req, res, next) {
     res.status(404).send("Not Found")
 });
 
-app.listen(PORT,()=>{console.log('Listening on http://localhost:3000/');});
+io.on('connection', (socket) => {
+    console.log('New user connected');
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+    socket.on('update', (msg) => {
+        console.log('socket '+msg);
+        socket.emit(msg);
+    });
+});
+
+server.listen(PORT,()=>{console.log('Listening on http://localhost:3000/');});

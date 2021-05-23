@@ -41,7 +41,7 @@ exports.updateExpense = function (req, res) {
 
 exports.deleteExpense = function (req, res) {
     if (req.user) {
-        Expense.destroy({where: {id: req.body.id}})
+        Expense.destroy({where: {id: req.body.id}}).then(()=>{res.send();})
             .catch((err) => console.log('Error: ' + err.message));
     } else res.redirect('/');
 }

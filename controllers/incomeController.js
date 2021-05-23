@@ -39,7 +39,7 @@ exports.updateIncome = function (req, res) {
 
 exports.deleteIncome = function (req, res) {
     if (req.user) {
-        Income.destroy({where: {id: req.body.id}})
+        Income.destroy({where: {id: req.body.id}}).then(()=>{res.send();})
             .catch((err) => console.log('Error: ' + err.message));
     } else res.redirect('/');
 }
